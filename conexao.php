@@ -1,5 +1,5 @@
 <?php
-// configuração do bd
+// configuracao do bd
 $host = 'localhost';
 $dbname = 'adocao_pets';
 $usuario = 'root';
@@ -8,7 +8,7 @@ $senha = '';
 try {
     $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8mb4", $usuario, $senha);
     
-    // configuração p/ errros
+    // p/ errros
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     
     

@@ -4,24 +4,13 @@ require_once 'conexao.php';
 $mensagem = '';
 $tipo_mensagem = '';
 
-// Verifica se o formulário foi enviado
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Pega os dados do formulário
-    $nome = trim($_POST['nome']);
-    $especie = $_POST['especie'];
-    $raca = trim($_POST['raca']);
-    $idade = trim($_POST['idade']);
-    $porte = $_POST['porte'];
-    $cidade = trim($_POST['cidade']);
-    $descricao = trim($_POST['descricao']);
     
-    // Configurações do Upload de Múltiplas Fotos
     $fotos_nomes = [];
     if (isset($_FILES['foto']) && is_array($_FILES['foto']['name'])) {
         $total_fotos = count($_FILES['foto']['name']);
         $extensoes_permitidas = ['jpg', 'jpeg', 'png'];
         
-        // Cria a pasta uploads se ela não existir
         if (!is_dir('uploads')) {
             mkdir('uploads', 0755, true);
         }
@@ -31,27 +20,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $extensao = strtolower(pathinfo($_FILES['foto']['name'][$i], PATHINFO_EXTENSION));
                 
                 if (in_array($extensao, $extensoes_permitidas)) {
-                    // Gera um nome único para cada foto
                     $foto_nome = uniqid() . '_' . $i . '.' . $extensao;
                     $destino = 'uploads/' . $foto_nome;
                     
                     if (move_uploaded_file($_FILES['foto']['tmp_name'][$i], $destino)) {
-                        $fotos_nomes[] = $foto_nome; // Guarda o nome da foto na lista
-                    } else {
-                        $mensagem = "Erro ao fazer o upload de uma das fotos.";
-                        $tipo_mensagem = "danger";
+                        $fotos_nomes[] = $foto_nome;
                     }
-                } else {
-                    $mensagem = "Formato de imagem inválido. Use JPG ou PNG.";
-                    $tipo_mensagem = "danger";
                 }
             }
         }
     }
-    // Junta todos os nomes das fotos em uma única string separada por vírgula
+    
     $foto_string = implode(',', $fotos_nomes);
-    // Se não houver erro, insere no banco
-    // Se não houver erro, insere no banco
+
     if (empty($mensagem)) {
         try {
             $sql = "INSERT INTO animais (nome, especie, raca, idade_valor, idade_tipo, porte, uf, cidade, whatsapp, foto, descricao, castrado, vacinado, doenca, vive_casa, vive_apartamento, resgatado) 
@@ -93,33 +74,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cadastrar Pet - Adote um Amigo</title>
-    <!-- Bootstrap CSS -->
+    <!-- bootstrap ccs -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Ícones -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
-    <style>
-        body { background-color: #f8f9fa; }
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <style> 
+        body { font-family: 'Poppins', sans-serif; background-color: #f8f9fa; } 
     </style>
 </head>
-<body>
+<body class="py-4">
 
-    <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
         <div class="container">
             <a class="navbar-brand" href="index.php"><i class="bi bi-heart-fill text-danger"></i> Adote um Amigo</a>
             <div class="d-flex">
-                <a href="index.php" class="btn btn-outline-light">Voltar para a Home</a>
+                <a href="admin.php" class="btn btn-outline-light btn-sm">Voltar ao Painel</a>
             </div>
         </div>
     </nav>
 
     <div class="container mb-5">
         <div class="row justify-content-center">
-            <div class="col-md-8">
+            <div class="col-md-10 col-lg-9">
                 
-                <!-- Mensagem de Sucesso ou Erro -->
+                <!-- sucesso ou erro -->
                 <?php if (!empty($mensagem)): ?>
                     <div class="alert alert-<?= $tipo_mensagem ?> alert-dismissible fade show" role="alert">
                         <?= $mensagem ?>
@@ -127,36 +107,40 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     </div>
                 <?php endif; ?>
 
-                <div class="card shadow-sm border-0">
-                    <div class="card-header bg-primary text-white">
-                        <h4 class="mb-0"><i class="bi bi-plus-circle"></i> Cadastrar Novo Pet para Adoção</h4>
+                <div class="card shadow-sm border-0" style="border-radius: 12px;">
+                    <div class="card-header bg-white border-0 pt-4 pb-0">
+                        <h3 class="fw-bold text-center">Cadastrar Novo Pet para Adoção</h3>
                     </div>
                     <div class="card-body p-4">
+                        
                         <form method="POST" action="cadastrar_animal.php" enctype="multipart/form-data">
                             
-                            <div class="row mb-3">
+                            <div class="row g-3">
                                 <div class="col-md-6">
                                     <label class="form-label fw-bold">Nome do Pet *</label>
-                                    <input type="text" name="nome" class="form-control" required placeholder="Ex: Rex">
+                                    <input type="text" name="nome" class="form-control" required placeholder="Ex: Rex, Mima etc.">
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label fw-bold">Espécie *</label>
                                     <select name="especie" class="form-select" required>
                                         <option value="">Selecione...</option>
-                                        <option value="Cão">Cão</option>
+					<option value="Ave">Ave</option>
+                                        <option value="Cachorro">Cachorro</option>
                                         <option value="Gato">Gato</option>
+                                        <option value="Peixe">Peixe</option>
+                                        <option value="Outro">Outro</option>
                                     </select>
                                 </div>
-                            </div>
 
-                            <div class="row mb-3">
                                 <div class="col-md-4">
-                                    <label class="form-label fw-bold">Raça</label>
-                                    <input type="text" name="raca" class="form-control" placeholder="Ex: Poodle, SRD">
-                                </div>
-                                <div class="col-md-4">
-                                    <label class="form-label fw-bold">Idade</label>
-                                    <input type="text" name="idade" class="form-control" placeholder="Ex: 2 anos, 3 meses">
+                                    <label class="form-label fw-bold">Idade *</label>
+                                    <div class="input-group">
+                                        <input type="number" name="idade_valor" class="form-control" required min="0" placeholder="Ex: 2, 8 etc...">
+                                        <select name="idade_tipo" class="form-select">
+                                            <option value="Anos">Anos</option>
+                                            <option value="Meses">Meses</option>
+                                        </select>
+                                    </div>
                                 </div>
                                 <div class="col-md-4">
                                     <label class="form-label fw-bold">Porte *</label>
@@ -167,28 +151,75 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                         <option value="Grande">Grande</option>
                                     </select>
                                 </div>
-                            </div>
+                                <div class="col-md-4">
+                                    <label class="form-label fw-bold">Raça</label>
+                                    <input type="text" name="raca" class="form-control" placeholder="Ex: Poodle, Siamês, SRD etc...">
+                                </div>
 
-                            <div class="row mb-3">
-                                <div class="col-md-6">
+                                <!-- cidade e uf -->
+                                <div class="col-md-4">
+                                    <label class="form-label fw-bold">UF *</label>
+                                    <select id="uf" name="uf" class="form-select" required>
+                                        <option value="">Carregando</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-8">
                                     <label class="form-label fw-bold">Cidade *</label>
-                                    <input type="text" name="cidade" class="form-control" required placeholder="Ex: São Paulo - SP">
+                                    <select id="cidade" name="cidade" class="form-select" required>
+                                        <option value="">Selecione a UF primeiro</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold">WhatsApp para Contato *</label>
+                                    <input type="text" name="whatsapp" class="form-control" placeholder="Ex: 49999998888" required>
                                 </div>
                                 <div class="col-md-6">
-                                    <label class="form-label fw-bold">Foto do Pet</label>
-                                    <input type="file" name="foto[]" class="form-control" accept="image/png, image/jpeg, image/jpg" multiple>>
-                                    <div class="form-text">Formatos aceitos: JPG e PNG - Segure Ctrk ou  Shift para escolher várias imagens.</div>
+                                    <label class="form-label fw-bold">Fotos do Pet *</label>
+                                    <input type="file" name="foto[]" class="form-control" multiple required accept="image/*">
+                                    <div class="form-text">Formatos aceitos: JPG e PNG - Segure Ctrl ou Shift para escolher várias imagens.</div>
                                 </div>
-                            </div>
 
-                            <div class="mb-4">
-                                <label class="form-label fw-bold">Descrição / História do Pet</label>
-                                <textarea name="descricao" class="form-control" rows="3" placeholder="Conte um pouco sobre o temperamento, vacinas, etc..."></textarea>
-                            </div>
+                                <div class="col-12">
+                                    <label class="form-label fw-bold">Descrição / História do Pet</label>
+                                    <textarea name="descricao" class="form-control" rows="3" placeholder="Conte um pouco sobre o temperamento, vacinas, etc..."></textarea>
+                                </div>
 
-                            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                                <a href="index.php" class="btn btn-light me-md-2">Cancelar</a>
-                                <button type="submit" class="btn btn-primary"><i class="bi bi-save"></i> Salvar Pet</button>
+                                <!-- flag) -->
+                                <div class="col-12 mt-4">
+                                    <label class="form-label fw-bold">Características Extras</label>
+                                    <div class="d-flex flex-wrap gap-3 p-3 bg-light rounded">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" name="castrado" value="1" id="castrado">
+                                            <label class="form-check-label" for="castrado">Castrado</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" name="vacinado" value="1" id="vacinado">
+                                            <label class="form-check-label" for="vacinado">Vacinado</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" name="doenca" value="1" id="doenca">
+                                            <label class="form-check-label" for="doenca">Possui Doença</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" name="vive_casa" value="1" id="vive_casa">
+                                            <label class="form-check-label" for="vive_casa">Acostumado com Casa</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" name="vive_apartamento" value="1" id="vive_apartamento">
+                                            <label class="form-check-label" for="vive_apartamento">Acostumado com Apt</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" name="resgatado" value="1" id="resgatado">
+                                            <label class="form-check-label" for="resgatado">É Resgatado</label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-12 text-end mt-4">
+                                    <a href="admin.php" class="btn btn-light me-2">Cancelar</a>
+                                    <button type="submit" class="btn btn-primary px-5 py-2"><i class="bi bi-save"></i> Salvar Pet</button>
+                                </div>
                             </div>
                         </form>
                     </div>
@@ -197,7 +228,42 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
     </div>
 
-    <!-- Bootstrap JS -->
+    <!-- api ibge -->
+    <script>
+        fetch('https://servicodados.ibge.gov.br/api/v1/localidades/estados')
+            .then(res => res.json())
+            .then(data => {
+                const ufSelect = document.getElementById('uf');
+                ufSelect.innerHTML = '<option value="">Selecione o Estado...</option>';
+                data.sort((a, b) => a.sigla.localeCompare(b.sigla));
+                data.forEach(estado => {
+                    ufSelect.innerHTML += `<option value="${estado.sigla}">${estado.sigla}</option>`;
+                });
+            });
+
+        document.getElementById('uf').addEventListener('change', function() {
+            const uf = this.value;
+            const cidadeSelect = document.getElementById('cidade');
+            
+            if (!uf) {
+                cidadeSelect.innerHTML = '<option value="">Selecione a UF primeiro...</option>';
+                return;
+            }
+
+            cidadeSelect.innerHTML = '<option value="">Carregando cidades...</option>';
+            
+            fetch(`https://servicodados.ibge.gov.br/api/v1/localidades/estados/${uf}/municipios`)
+                .then(res => res.json())
+                .then(cidades => {
+                    cidadeSelect.innerHTML = '<option value="">Selecione a Cidade...</option>';
+                    cidades.forEach(cidade => {
+                        cidadeSelect.innerHTML += `<option value="${cidade.nome}">${cidade.nome}</option>`;
+                    });
+                });
+        });
+    </script>
+    
+    <!-- bootstrapjs -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

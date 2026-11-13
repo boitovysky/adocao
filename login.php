@@ -8,12 +8,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = $_POST['email'];
     $senha = $_POST['senha'];
 
-    // Busca o usuário no banco
     $stmt = $pdo->prepare("SELECT * FROM usuarios WHERE email = :email");
     $stmt->execute([':email' => $email]);
     $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    // Verifica se o usuário existe e se a senha bate (usando password_verify)
+    // password_verify
     if ($usuario && password_verify($senha, $usuario['senha'])) {
         $_SESSION['admin_id'] = $usuario['id'];
         $_SESSION['admin_nome'] = $usuario['nome'];
