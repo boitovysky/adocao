@@ -23,6 +23,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $nome = $_POST['nome'];
     $especie = $_POST['especie'];
     $raca = $_POST['raca'];
+    $sexo = $_POST['sexo'];
     $idade_valor = $_POST['idade_valor'];
     $idade_tipo = $_POST['idade_tipo'];
     $porte = $_POST['porte'];
@@ -38,7 +39,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $vive_apartamento = isset($_POST['vive_apartamento']) ? 1 : 0;
     $resgatado = isset($_POST['resgatado']) ? 1 : 0;
 
-    $foto_string = $animal['foto']; // Mantém as antigas por padrão
+    $foto_string = $animal['foto'];
     
     if (isset($_FILES['foto']) && is_array($_FILES['foto']['name']) && $_FILES['foto']['error'][0] !== UPLOAD_ERR_NO_FILE) {
         $fotos_nomes = [];
@@ -74,7 +75,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     try {
-        $sql = "UPDATE animais SET nome = :nome, especie = :especie, raca = :raca, idade_valor = :idade_valor, 
+        $sql = "UPDATE animais SET nome = :nome, especie = :especie, raca = :raca, sexo = :sexo, idade_valor = :idade_valor, 
                 idade_tipo = :idade_tipo, porte = :porte, uf = :uf, cidade = :cidade, whatsapp = :whatsapp, 
                 foto = :foto, descricao = :descricao, castrado = :castrado, vacinado = :vacinado, 
                 doenca = :doenca, vive_casa = :vive_casa, vive_apartamento = :vive_apartamento, resgatado = :resgatado 
@@ -82,7 +83,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         
         $stmt = $pdo->prepare($sql);
         $stmt->execute([
-            ':nome' => $nome, ':especie' => $especie, ':raca' => $raca, ':idade_valor' => $idade_valor,
+            ':nome' => $nome, ':especie' => $especie, ':raca' => $raca, ':sexo' => $sexo, ':idade_valor' => $idade_valor,
             ':idade_tipo' => $idade_tipo, ':porte' => $porte, ':uf' => $uf, ':cidade' => $cidade,
             ':whatsapp' => $whatsapp, ':foto' => $foto_string, ':descricao' => $descricao,
             ':castrado' => $castrado, ':vacinado' => $vacinado, ':doenca' => $doenca,
@@ -103,21 +104,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <title>Editar Pet</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Pet - Adote um Amigo</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500&display=swap" rel="stylesheet">
-    <style> body { font-family: 'Poppins', sans-serif; background-color: #f8f9fa; } </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body class="py-4">
 
 <div class="container">
-    <div class="card shadow-sm border-0 mx-auto" style="max-width: 900px; border-radius: 12px;">
+    <div class="card shadow-sm border-0 mx-auto" style="max-width: 900px;">
         <div class="card-header bg-white border-0 pt-4 pb-0 d-flex justify-content-between align-items-center">
             <h3 class="fw-bold mb-0">Editar Pet: <?= htmlspecialchars($animal['nome']) ?></h3>
             <a href="admin.php" class="btn btn-outline-secondary btn-sm">Voltar ao Painel</a>
@@ -125,7 +125,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <div class="card-body p-4">
             
             <?php if (!empty($mensagem)): ?>
-                <div class="alert alert-<?= $tipo_mensagem ?> alert-dismissible fade show">
+                <div class="alert alert-<?= $tipo_mensagem ?> alert-dismissible fade show border-0 shadow-sm">
                     <?= $mensagem ?>
                     <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                 </div>
@@ -133,24 +133,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             <form method="POST" enctype="multipart/form-data">
                 <div class="row g-3">
-                    <!-- Nome e Espécie -->
                     <div class="col-md-6">
-                        <label class="form-label">Nome do Pet *</label>
+                        <label class="form-label fw-bold">Nome do Pet *</label>
                         <input type="text" name="nome" class="form-control" value="<?= htmlspecialchars($animal['nome']) ?>" required>
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label">Espécie *</label>
+                        <label class="form-label fw-bold">Espécie *</label>
                         <select name="especie" class="form-select" required>
-                            <option value="Cão" <?= $animal['especie'] == 'Ave' ? 'selected' : '' ?>>Ave</option>
-                            <option value="Cão" <?= $animal['especie'] == 'Chachorro' ? 'selected' : '' ?>>Cachorro</option>
+                            <option value="Ave" <?= $animal['especie'] == 'Ave' ? 'selected' : '' ?>>Ave</option>
+                            <option value="Cachorro" <?= $animal['especie'] == 'Cachorro' ? 'selected' : '' ?>>Cachorro</option>
                             <option value="Gato" <?= $animal['especie'] == 'Gato' ? 'selected' : '' ?>>Gato</option>
-                            <option value="Outro" <?= $animal['especie'] == 'Peixe' ? 'selected' : '' ?>>Peixe</option>
+                            <option value="Peixe" <?= $animal['especie'] == 'Peixe' ? 'selected' : '' ?>>Peixe</option>
                             <option value="Outro" <?= $animal['especie'] == 'Outro' ? 'selected' : '' ?>>Outro</option>
                         </select>
                     </div>
 
                     <div class="col-md-4">
-                        <label class="form-label">Idade *</label>
+                        <label class="form-label fw-bold">Idade *</label>
                         <div class="input-group">
                             <input type="number" name="idade_valor" class="form-control" value="<?= $animal['idade_valor'] ?>" required min="0">
                             <select name="idade_tipo" class="form-select">
@@ -160,7 +159,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         </div>
                     </div>
                     <div class="col-md-4">
-                        <label class="form-label">Porte *</label>
+                        <label class="form-label fw-bold">Porte *</label>
                         <select name="porte" class="form-select" required>
                             <option value="Pequeno" <?= $animal['porte'] == 'Pequeno' ? 'selected' : '' ?>>Pequeno</option>
                             <option value="Médio" <?= $animal['porte'] == 'Médio' ? 'selected' : '' ?>>Médio</option>
@@ -168,43 +167,49 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         </select>
                     </div>
                     <div class="col-md-4">
-                        <label class="form-label">Raça</label>
-                        <input type="text" name="raca" class="form-control" value="<?= htmlspecialchars($animal['raca']) ?>">
-                    </div>
-
-                    <div class="col-md-4">
-                        <label class="form-label">UF *</label>
-                        <select id="uf" name="uf" class="form-select" required>
-                            <option value="<?= $animal['uf'] ?>"><?= $animal['uf'] ?> (Atual)</option>
-                            <!-- O JS vai popular o resto -->
+                        <label class="form-label fw-bold">Sexo *</label>
+                        <select name="sexo" class="form-select" required>
+                            <option value="Macho" <?= $animal['sexo'] == 'Macho' ? 'selected' : '' ?>>Macho</option>
+                            <option value="Fêmea" <?= $animal['sexo'] == 'Fêmea' ? 'selected' : '' ?>>Fêmea</option>
                         </select>
                     </div>
-                    <div class="col-md-8">
-                        <label class="form-label">Cidade *</label>
+                    
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">Raça</label>
+                        <input type="text" name="raca" class="form-control" value="<?= htmlspecialchars($animal['raca']) ?>">
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label fw-bold">UF *</label>
+                        <select id="uf" name="uf" class="form-select" required>
+                            <option value="<?= $animal['uf'] ?>"><?= $animal['uf'] ?> (Atual)</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label fw-bold">Cidade *</label>
                         <select id="cidade" name="cidade" class="form-select" required>
                             <option value="<?= htmlspecialchars($animal['cidade']) ?>"><?= htmlspecialchars($animal['cidade']) ?> (Atual)</option>
                         </select>
                     </div>
 
                     <div class="col-md-6">
-                        <label class="form-label">WhatsApp para Contato *</label>
+                        <label class="form-label fw-bold">WhatsApp para Contato *</label>
                         <input type="text" name="whatsapp" class="form-control" value="<?= htmlspecialchars($animal['whatsapp']) ?>" required>
                     </div>
 
                     <div class="col-md-6">
-                        <label class="form-label">Fotos do Pet (Deixe vazio para manter as atuais)</label>
+                        <label class="form-label fw-bold">Fotos do Pet</label>
                         <input type="file" name="foto[]" class="form-control" multiple accept="image/*">
-                        <div class="form-text text-danger">Atenção: subir novas fotos apagará as fotos antigas.</div>
+                        <div class="form-text text-danger fw-bold">Atenção: subir novas fotos apagará as fotos antigas.</div>
                     </div>
 
                     <div class="col-12">
-                        <label class="form-label">Descrição</label>
+                        <label class="form-label fw-bold">Descrição</label>
                         <textarea name="descricao" class="form-control" rows="3"><?= htmlspecialchars($animal['descricao']) ?></textarea>
                     </div>
 
                     <div class="col-12 mt-4">
                         <label class="form-label fw-bold">Características Extras</label>
-                        <div class="d-flex flex-wrap gap-3 p-3 bg-light rounded">
+                        <div class="d-flex flex-wrap gap-4 p-3 bg-light rounded">
                             <div class="form-check"><input class="form-check-input" type="checkbox" name="castrado" value="1" <?= $animal['castrado'] ? 'checked' : '' ?>><label class="form-check-label">Castrado</label></div>
                             <div class="form-check"><input class="form-check-input" type="checkbox" name="vacinado" value="1" <?= $animal['vacinado'] ? 'checked' : '' ?>><label class="form-check-label">Vacinado</label></div>
                             <div class="form-check"><input class="form-check-input" type="checkbox" name="doenca" value="1" <?= $animal['doenca'] ? 'checked' : '' ?>><label class="form-check-label">Possui Doença</label></div>
@@ -215,7 +220,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     </div>
 
                     <div class="col-12 text-end mt-4">
-                        <button type="submit" class="btn btn-primary px-5 py-2">Salvar Alterações</button>
+                        <button type="submit" class="btn btn-primary px-5 py-2 fw-bold">Salvar Alterações</button>
                     </div>
                 </div>
             </form>
@@ -242,7 +247,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         });
 
-    // mudança de uf
     document.getElementById('uf').addEventListener('change', function() {
         carregarCidades(this.value);
     });
@@ -261,10 +265,4 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 cidadeSelect.innerHTML = '<option value="">Selecione a Cidade...</option>';
                 cidades.forEach(cidade => {
                     const selected = (cidade.nome === cidadeAtual) ? 'selected' : '';
-                    cidadeSelect.innerHTML += `<option value="${cidade.nome}" ${selected}>${cidade.nome}</option>`;
-                });
-            });
-    }
-</script>
-</body>
-</html>
+                    cidadeSelect.innerHTML += `<

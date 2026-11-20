@@ -1,0 +1,157 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Poppins:wght@300;400;500;600&display=swap');
+
+:root {
+    /* Paleta Acolhedora */
+    --laranja-suave: #FFB067; /* Laranja pastel */
+    --laranja-hover: #FA9F4F;
+    --amarelo-pastel: #FFF3D4;
+    --branco-puro: #FFFFFF;
+    --cinza-fundo: #F8F9FA;
+    
+    /* Preto "Claro" (Cinza Escuro) para textos e detalhes */
+    --texto-principal: #3A3A3A; 
+    --texto-secundario: #6B6B6B;
+    --borda-suave: #EAEAEA;
+    
+    /* Microinterações e Sombras */
+    --sombra-card: 0 8px 24px rgba(0, 0, 0, 0.04);
+    --sombra-hover: 0 12px 32px rgba(255, 176, 103, 0.15);
+    --transicao-suave: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: var(--cinza-fundo);
+    color: var(--texto-principal);
+    -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4, h5, h6, .navbar-brand, .card-title, .btn {
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+}
+
+.navbar {
+    background-color: var(--branco-puro) !important;
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.03);
+    padding: 15px 0;
+    transition: var(--transicao-suave);
+}
+.navbar-brand {
+    color: var(--texto-principal) !important;
+    font-size: 1.6rem;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.navbar-brand i {
+    color: var(--laranja-suave);
+}
+
+.btn {
+    border-radius: 50px; /* Pílula */
+    padding: 8px 24px;
+    font-weight: 600;
+    transition: var(--transicao-suave);
+    text-transform: none;
+}
+.btn-primary {
+    background-color: var(--laranja-suave);
+    border-color: var(--laranja-suave);
+    color: var(--branco-puro);
+}
+.btn-primary:hover, .btn-primary:focus {
+    background-color: var(--laranja-hover);
+    border-color: var(--laranja-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(255, 176, 103, 0.3);
+}
+.btn-outline-primary {
+    color: var(--laranja-hover);
+    border-color: var(--laranja-suave);
+    border-width: 2px;
+}
+.btn-outline-primary:hover {
+    background-color: var(--laranja-suave);
+    color: var(--branco-puro);
+}
+
+.card {
+    border: 1px solid var(--borda-suave);
+    border-radius: 24px; /* Cantos bem amigáveis */
+    background: var(--branco-puro);
+    box-shadow: var(--sombra-card);
+    overflow: hidden;
+    transition: var(--transicao-suave);
+}
+.card-animal:hover {
+    transform: translateY(-6px);
+    box-shadow: var(--sombra-hover);
+    border-color: var(--laranja-suave);
+}
+.foto-animal {
+    height: 250px;
+    object-fit: cover;
+    border-radius: 24px 24px 0 0;
+    transition: transform 0.5s ease;
+}
+.card-animal:hover .foto-animal {
+    transform: scale(1.05); /* Leve zoom na imagem ao passar o mouse */
+}
+
+.form-control, .form-select {
+    border-radius: 12px;
+    border: 1px solid var(--borda-suave);
+    padding: 10px 16px;
+    color: var(--texto-principal);
+    transition: var(--transicao-suave);
+    background-color: var(--branco-puro);
+}
+.form-control:focus, .form-select:focus {
+    border-color: var(--laranja-suave);
+    box-shadow: 0 0 0 0.25rem rgba(255, 176, 103, 0.25);
+    background-color: var(--branco-puro);
+}
+
+.filter-box {
+    background-color: var(--amarelo-pastel);
+    border-radius: 16px;
+    padding: 16px;
+    border: 1px solid #F9E8C6;
+}
+
+.badge {
+    border-radius: 50px;
+    padding: 6px 12px;
+    font-weight: 600;
+    font-family: 'Poppins', sans-serif;
+}
+.bg-info { background-color: var(--amarelo-pastel) !important; color: #B57E29 !important; }
+.bg-success { background-color: #D1F2D9 !important; color: #2F7C47 !important; }
+
+/* --- EFEITO AMBIENT LIGHT (Fundo do Carrossel) --- */
+.ambient-light-container {
+    position: relative;
+    border-radius: 24px;
+    overflow: hidden;
+    background-color: var(--branco-puro);
+}
+.ambient-light-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    opacity: 0;
+    transition: opacity 1.5s ease-in-out, background 1s ease;
+    filter: blur(50px) saturate(150%); /* Desfoca a imagem que vai virar o fundo */
+    transform: scale(1.2); /* Evita que as bordas do blur apareçam */
+}
+.ambient-light-content {
+    position: relative;
+    z-index: 1;
+}

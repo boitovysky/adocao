@@ -35,14 +35,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if (empty($mensagem)) {
         try {
-            $sql = "INSERT INTO animais (nome, especie, raca, idade_valor, idade_tipo, porte, uf, cidade, whatsapp, foto, descricao, castrado, vacinado, doenca, vive_casa, vive_apartamento, resgatado) 
-                    VALUES (:nome, :especie, :raca, :idade_valor, :idade_tipo, :porte, :uf, :cidade, :whatsapp, :foto, :descricao, :castrado, :vacinado, :doenca, :vive_casa, :vive_apartamento, :resgatado)";
+            $sql = "INSERT INTO animais (nome, especie, raca, sexo, idade_valor, idade_tipo, porte, uf, cidade, whatsapp, foto, descricao, castrado, vacinado, doenca, vive_casa, vive_apartamento, resgatado) 
+                    VALUES (:nome, :especie, :raca, :sexo, :idade_valor, :idade_tipo, :porte, :uf, :cidade, :whatsapp, :foto, :descricao, :castrado, :vacinado, :doenca, :vive_casa, :vive_apartamento, :resgatado)";
             
             $stmt = $pdo->prepare($sql);
             $stmt->execute([
                 ':nome' => $_POST['nome'],
                 ':especie' => $_POST['especie'],
                 ':raca' => $_POST['raca'],
+                ':sexo' => $_POST['sexo'],
                 ':idade_valor' => $_POST['idade_valor'],
                 ':idade_tipo' => $_POST['idade_tipo'],
                 ':porte' => $_POST['porte'],
@@ -74,23 +75,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cadastrar Pet - Adote um Amigo</title>
-    <!-- bootstrap ccs -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
-    
-    <style> 
-        body { font-family: 'Poppins', sans-serif; background-color: #f8f9fa; } 
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body class="py-4">
 
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+    <nav class="navbar navbar-expand-lg navbar-light mb-4">
         <div class="container">
-            <a class="navbar-brand" href="index.php"><i class="bi bi-heart-fill text-danger"></i> Adote um Amigo</a>
+            <a class="navbar-brand" href="index.php"><i class="bi bi-heart-fill"></i> Adote um Amigo</a>
             <div class="d-flex">
-                <a href="admin.php" class="btn btn-outline-light btn-sm">Voltar ao Painel</a>
+                <a href="admin.php" class="btn btn-outline-secondary btn-sm">Voltar ao Painel</a>
             </div>
         </div>
     </nav>
@@ -99,15 +96,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <div class="row justify-content-center">
             <div class="col-md-10 col-lg-9">
                 
-                <!-- sucesso ou erro -->
                 <?php if (!empty($mensagem)): ?>
-                    <div class="alert alert-<?= $tipo_mensagem ?> alert-dismissible fade show" role="alert">
+                    <div class="alert alert-<?= $tipo_mensagem ?> alert-dismissible fade show border-0 shadow-sm" role="alert">
                         <?= $mensagem ?>
                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
                 <?php endif; ?>
 
-                <div class="card shadow-sm border-0" style="border-radius: 12px;">
+                <div class="card shadow-sm border-0">
                     <div class="card-header bg-white border-0 pt-4 pb-0">
                         <h3 class="fw-bold text-center">Cadastrar Novo Pet para Adoção</h3>
                     </div>
@@ -124,7 +120,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                     <label class="form-label fw-bold">Espécie *</label>
                                     <select name="especie" class="form-select" required>
                                         <option value="">Selecione...</option>
-					<option value="Ave">Ave</option>
+                                        <option value="Ave">Ave</option>
                                         <option value="Cachorro">Cachorro</option>
                                         <option value="Gato">Gato</option>
                                         <option value="Peixe">Peixe</option>
@@ -135,7 +131,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 <div class="col-md-4">
                                     <label class="form-label fw-bold">Idade *</label>
                                     <div class="input-group">
-                                        <input type="number" name="idade_valor" class="form-control" required min="0" placeholder="Ex: 2, 8 etc...">
+                                        <input type="number" name="idade_valor" class="form-control" required min="0" placeholder="Ex: 2">
                                         <select name="idade_tipo" class="form-select">
                                             <option value="Anos">Anos</option>
                                             <option value="Meses">Meses</option>
@@ -152,21 +148,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                     </select>
                                 </div>
                                 <div class="col-md-4">
-                                    <label class="form-label fw-bold">Raça</label>
-                                    <input type="text" name="raca" class="form-control" placeholder="Ex: Poodle, Siamês, SRD etc...">
-                                </div>
-
-                                <!-- cidade e uf -->
-                                <div class="col-md-4">
-                                    <label class="form-label fw-bold">UF *</label>
-                                    <select id="uf" name="uf" class="form-select" required>
-                                        <option value="">Carregando</option>
+                                    <label class="form-label fw-bold">Sexo *</label>
+                                    <select name="sexo" class="form-select" required>
+                                        <option value="">Selecione...</option>
+                                        <option value="Macho">Macho</option>
+                                        <option value="Fêmea">Fêmea</option>
                                     </select>
                                 </div>
-                                <div class="col-md-8">
+                                
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold">Raça</label>
+                                    <input type="text" name="raca" class="form-control" placeholder="Ex: Poodle, SRD">
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label fw-bold">UF *</label>
+                                    <select id="uf" name="uf" class="form-select" required>
+                                        <option value="">...</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-3">
                                     <label class="form-label fw-bold">Cidade *</label>
                                     <select id="cidade" name="cidade" class="form-select" required>
-                                        <option value="">Selecione a UF primeiro</option>
+                                        <option value="">...</option>
                                     </select>
                                 </div>
 
@@ -185,10 +188,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                     <textarea name="descricao" class="form-control" rows="3" placeholder="Conte um pouco sobre o temperamento, vacinas, etc..."></textarea>
                                 </div>
 
-                                <!-- flag) -->
                                 <div class="col-12 mt-4">
                                     <label class="form-label fw-bold">Características Extras</label>
-                                    <div class="d-flex flex-wrap gap-3 p-3 bg-light rounded">
+                                    <div class="d-flex flex-wrap gap-4 p-3 bg-light rounded">
                                         <div class="form-check">
                                             <input class="form-check-input" type="checkbox" name="castrado" value="1" id="castrado">
                                             <label class="form-check-label" for="castrado">Castrado</label>
@@ -217,7 +219,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 </div>
 
                                 <div class="col-12 text-end mt-4">
-                                    <a href="admin.php" class="btn btn-light me-2">Cancelar</a>
+                                    <a href="admin.php" class="btn btn-outline-secondary me-2">Cancelar</a>
                                     <button type="submit" class="btn btn-primary px-5 py-2"><i class="bi bi-save"></i> Salvar Pet</button>
                                 </div>
                             </div>
@@ -228,13 +230,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
     </div>
 
-    <!-- api ibge -->
     <script>
         fetch('https://servicodados.ibge.gov.br/api/v1/localidades/estados')
             .then(res => res.json())
             .then(data => {
                 const ufSelect = document.getElementById('uf');
-                ufSelect.innerHTML = '<option value="">Selecione o Estado...</option>';
+                ufSelect.innerHTML = '<option value="">Selecione...</option>';
                 data.sort((a, b) => a.sigla.localeCompare(b.sigla));
                 data.forEach(estado => {
                     ufSelect.innerHTML += `<option value="${estado.sigla}">${estado.sigla}</option>`;
@@ -246,11 +247,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             const cidadeSelect = document.getElementById('cidade');
             
             if (!uf) {
-                cidadeSelect.innerHTML = '<option value="">Selecione a UF primeiro...</option>';
+                cidadeSelect.innerHTML = '<option value="">Selecione a UF...</option>';
                 return;
             }
 
-            cidadeSelect.innerHTML = '<option value="">Carregando cidades...</option>';
+            cidadeSelect.innerHTML = '<option value="">Carregando...</option>';
             
             fetch(`https://servicodados.ibge.gov.br/api/v1/localidades/estados/${uf}/municipios`)
                 .then(res => res.json())
@@ -263,7 +264,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         });
     </script>
     
-    <!-- bootstrapjs -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
